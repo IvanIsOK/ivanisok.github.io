@@ -29,7 +29,7 @@
     <a href="https://github.com/ivanisok" target="_blank" class="menuLink">My GitHub</a>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <main class="pt-28 max-w-6xl mx-auto px-4">
 
     <!-- About -->
@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <!-- Repos -->
+    <!-- Repositories -->
     <section>
       <h2 class="text-3xl font-bold mb-6">My Repositories</h2>
       <div id="repos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -53,19 +53,20 @@
     Auto-updated from GitHub every visit • © Ivan
   </footer>
 
-  <!-- Motion One (loaded AFTER DOM) -->
+  <!-- External Libraries -->
   <script src="https://unpkg.com/motion@10.16.2/dist/motion.umd.min.js"></script>
-
-  <!-- Marked.js for Markdown rendering -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+  <!-- Inline Scripts -->
   <script>
+    // Safe animation wrapper
     function safeAnimate(el, keyframes, options) {
       if (window.motion && typeof window.motion.animate === 'function') {
         window.motion.animate(el, keyframes, options);
       }
     }
 
+    // Mobile menu toggle
     const btn = document.getElementById('menuBtn');
     const menu = document.getElementById('mobileMenu');
 
@@ -78,7 +79,7 @@
       link.addEventListener('click', () => menu.classList.add('hidden'));
     });
 
-    // Utility to fetch and cache data for 5-8 hours
+    // Fetch with caching
     async function fetchWithCache(url, cacheKey) {
       const now = Date.now();
       const cached = JSON.parse(localStorage.getItem(cacheKey) || '{}');
@@ -91,18 +92,18 @@
       return data;
     }
 
-    // Fetch and render About Me with caching (5-8 h)
+    // Load About Me
     async function loadAboutMe() {
       try {
         const markdown = await fetchWithCache('https://raw.githubusercontent.com/ivanisok/About-Me/main/README.md', 'aboutMe');
         document.getElementById('aboutText').innerHTML = marked.parse(markdown);
       } catch (e) {
         console.warn('Using fallback About Me text', e);
-        document.getElementById('aboutText').textContent = 'Hi! Im Ivan, a young dev interested in Android, i dailydrive : Linux! (nerd)';
+        document.getElementById('aboutText').textContent = 'Hi! Im Ivan, a young dev interested in Android, I daily drive Linux! (nerd)';
       }
     }
 
-    // Fetch GitHub repos with caching (5-8 h)
+    // Load GitHub repos
     async function loadRepos() {
       try {
         const json = await fetchWithCache('https://api.github.com/users/ivanisok/repos?per_page=100&sort=updated', 'repos');
@@ -115,7 +116,6 @@
           card.href = repo.html_url;
           card.target = '_blank';
           card.className = 'repoCard block bg-zinc-900 border border-zinc-800 rounded-2xl p-5 hover:border-blue-500 transition-transform duration-200 shadow hover:scale-105';
-
           card.innerHTML = `
             <h3 class="text-lg font-semibold mb-1">${repo.name}</h3>
             <p class="text-sm text-zinc-400 mb-3">${repo.description ?? 'No description'}</p>
@@ -124,7 +124,6 @@
               <span>${repo.language ?? ''}</span>
             </div>
           `;
-
           container.appendChild(card);
           safeAnimate(card, { opacity: [0, 1], y: [20, 0] }, { duration: 0.4 });
         });
@@ -133,6 +132,7 @@
       }
     }
 
+    // Enable hover animations
     function enableHoverAnimations() {
       if (!window.matchMedia('(hover: hover)').matches) return;
 
@@ -152,5 +152,9 @@
       loadRepos().then(enableHoverAnimations);
     });
   </script>
+
+  <!-- Keep Android Open banner -->
+  <script src="https://keepandroidopen.org/banner.js"></script>
+
 </body>
 </html>
